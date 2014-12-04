@@ -11,11 +11,11 @@ newLine:
 	syscall
 	jr $ra
 
-# Ouverture d'un fichier. 
-#	$a0 nom du fichier, 
+# Ouverture d'un fichier.
+#	$a0 nom du fichier,
 #	$a1 le flag d'ouverture (0 lecture, 1 ecriture)
 # Registres utilises : $v0, $a2
-openfile: 
+openfile:
 	li   	$v0, 13       # system call for open file
 	li   	$a2, 0
 	syscall               # open a file (file descriptor returned in $v0)
@@ -33,14 +33,14 @@ closeFile:
 # Registres utilises : $v0, $a1, $a2
 extractionValue:
 	li		$v0, 14
-	la 		$a1, grille 
+	la 		$a1, grille
 	li 		$a2, 81
 	syscall
 	jr 		$ra
 
 # Affiche la grille.
 # Registres utilises : $v0, $a0, $t[0-2]
-printArray:  
+printArray:
 	la	 	$t0, grille
 	add 	$sp, $sp, -4		# \ Sauvegarde de la reference du dernier jump
 	sw 		$ra, 0($sp)			# /
@@ -54,13 +54,13 @@ printArray:
 			add		$t1, $t1, 1				# $t1 += 1;
 		j boucle_printArray
 	end_printArray:
-		lw 		$ra, 0($sp)					# \ On recharge la reference 
+		lw 		$ra, 0($sp)					# \ On recharge la reference
 		add 	$sp, $sp, 4					# / du dernier jump
 	jr $ra
 
 # Change array from ascii to integer
 # Registres utilises : $t[0-3]
-changeArrayAsciiCode:  
+changeArrayAsciiCode:
 	add 	$sp, $sp, -4
 	sw 		$ra, 0($sp)
 	la		$t3, grille
@@ -83,7 +83,7 @@ changeArrayAsciiCode:
 #	$a1 represente le nombre b (doit etre positif)
 # Resultat dans : $v0
 # Registres utilises : $a0
-modulo: 
+modulo:
 	sub 	$sp, $sp, 4
 	sw 		$ra, 0($sp)
 	boucle_modulo:
@@ -108,26 +108,26 @@ main:
 	jal extractionValue
 	jal closeFile
 	jal changeArrayAsciiCode
-	
+
 	jal printArray
 	jal newLine
-	
+
 	li $t6, 0
-	
+
 	tagule:
 	la $a0, grille
 	move $a1, $t6
 	jal colonne_n_valide
-	
+
 	move $a0, $v0
 	li $v0, 1
 	syscall
-	
+
 	add $t6, $t6, 1
 	bne $t6, 9, tagule
-	
+
 	jal exit
-	
+
 # Mettre des appels de fonctions dans cette zone.
 
 # ------------------------------------------------- #
@@ -146,52 +146,52 @@ main:
 
 colonne_n_valide:
 	li $t0, 0
-	
+
 	# $t2 = $a0 + $a1 (adress grille[n]
 	move $t2, $a0
 	add $t2, $t2, $a1
-	
+
 	# for( $t0=0 ; $t0!=9 ; $t0++ )
 	colonne_n_valide_boucle_1:
 		lb $t3, 0($t2)
-		
+
 		#li $v0, 1
 		#move $a0, $t3
 		#syscall
 		#li		$v0, 11
 		#li		$a0, 10
 		#syscall
-		
+
 		# for( $t1 = $t0+1 ; $t1 != 9 ; $t1++ )
 		add $t1, $t0, 1
 		#	$t4 = $t2 (adress + n) + 9
 		add $t4, $t2, 9
-		
+
 		colonne_n_valide_boucle_2:
-			
+
 			lb $t5, 0($t4)
-			
+
 			beq $t5, 0, colonne_n_valide_0
 			beq $t5, $t3, colonne_n_valide_false
 			colonne_n_valide_0:
-			
+
 			#li $v0, 1
 			#move $a0, $t5
 			#syscall
-			
+
 			add $t1, $t1, 1
 			add $t4, $t4, 9
 			bne $t1, 9, colonne_n_valide_boucle_2
-		
-		
+
+
 		#li		$v0, 11
 		#li		$a0, 10
 		#syscall
-		
+
 		add $t2, $t2, 9
 		add $t0, $t0, 1
 		bne, $t0, 8, colonne_n_valide_boucle_1
-		
+
 		colonne_n_valide_true:
 			li $v0, 0
 			j colonne_n_valide_end
@@ -200,10 +200,65 @@ colonne_n_valide:
 		colonne_n_valide_end:
 	jr $ra
 
+ligne_n_valide :
+	li $t0, 0
+
+	# $t2 = $a0 + $a1 (adress grille[n]
+	move $t2, $a0
+	add $t2, $t2, $a1
+
+	# for( $t0=0 ; $t0!=9 ; $t0++ )
+	ligne_n_valide_boucle_1:
+		lb $t3, 0($t2)
+
+		#li $v0, 1
+		#move $a0, $t3
+		#syscall
+		#li		$v0, 11
+		#li		$a0, 10
+		#syscall
+
+		# for( $t1 = $t0+1 ; $t1 != 9 ; $t1++ )
+		add $t1, $t0, 1
+		#	$t4 = $t2 (adress + n) + 1
+		add $t4, $t2, 1
+
+		ligne_n_valide_boucle_2:
+
+			lb $t5, 0($t4)
+
+			beq $t5, 0, ligne_n_valide_0
+			beq $t5, $t3, ligne_n_valide_false
+			ligne_n_valide_0:
+
+			#li $v0, 1
+			#move $a0, $t5
+			#syscall
+
+			add $t1, $t1, 1
+			add $t4, $t4, 1
+			bne $t1, 9, ligne_n_valide_boucle_2
+
+
+		#li		$v0, 11
+		#li		$a0, 10
+		#syscall
+
+		add $t2, $t2, 1
+		add $t0, $t0, 1
+		bne, $t0, 8, ligne_n_valide_boucle_1
+
+		ligne_n_valide_true:
+			li $v0, 0
+			j colonne_n_valide_end
+		ligne_n_valide_false:
+			li $v0, 1
+		ligne_n_valide_end:
+	jr $ra
 
 # Fin de la zone d'appel de fonctions.
 
-exit: 
+exit:
 	li		$v0, 10
 	syscall
 
