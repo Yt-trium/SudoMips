@@ -1,1 +1,1 @@
-spim -f main.asm s2.txt
+spim -f projet.asm s2.txt
