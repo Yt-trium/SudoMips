@@ -122,9 +122,6 @@ main:
 	move $a0, $v0
 	li $v0, 1
 	syscall
-	li		$v0, 11
-	li		$a0, 10
-	syscall
 
 	add $t9, $t9, 1
 	bne $t9, 9, tagule
@@ -320,6 +317,7 @@ carre_n_valide_index_base:
 #		0 <= $a1 <= 8
 # vars :	$t0
 #		$t1
+#		$t3
 # ------------------------------------------------- #
 carre_n_valide_index_n:
 	move $t0, $a0
@@ -348,214 +346,146 @@ carre_n_valide_index_n:
 	
 	jr $ra
 
-# ------------------------------------------------- #
-# func :	carre_n_valide
-# args :	$a0 : adress table
-# 		$a1 : n° bloc (0-8)
-# retu :	$v0 : 1 = invalide, 0 = valide
-# prec :	table : 81 bytes
-# vars :	$t0 : compteur boucle 1
-# 		$t1 : compteur boucle 2
-#		$t2 : index 1
-# 		$t3 : index 2
-#		$t4 : index base
-#		$t5 : MEM[$t2]
-#		$t6 : MEM[$t3]
-#		$t7 : tmp $a0
-#		$t8 : tmp $a1
-#		$s1 : tmp $ra
-# ------------------------------------------------- #
+#
+# args : $a0 : adress table
+# 	 $a1 : bloc (n)
+#
 carre_n_valide:
-	# save $a0
-	add $sp, $sp, -4
-	sw $a0, 0($sp)
+	
 	# save $ra
 	add $sp, $sp, -4
 	sw $ra, 0($sp)
 	
-	move $a0, $a1
-	jal carre_n_valide_index_base
-	move $t4, $v0
+	# save $a0
+	add $sp, $sp, -4
+	sw $a0, 0($sp)
 	
-	# load $ra
-	lw $ra, 0($sp)
-	add $sp, $sp, 4
+	move $a0, $a1
+	
+	jal carre_n_valide_index_base
+	
+	move $t2, $v0
+	
 	# load $a0
 	lw $a0, 0($sp)
 	add $sp, $sp, 4
 	
-	# for ( i=0 ; i<9 ; i++ )
-	# 
-	li, $t0, 0
-	carre_n_valide_boucle_1:
-		# func :	carre_n_valide_index_n
-		# args :	$a0 : index base
-		#		$a1 : n
-		move $t7, $a0
-		move $t8, $a1
+	# load $ra
+	lw $ra, 0($sp)
+	add $sp, $sp, 4
+	
+	# $t0 : i
+	# for i=0 ; i<8; i++
+	li $t0, 0 
+	carre_n_valide_boucle_1:	
+		# save $ra
+		add $sp, $sp, -4
+		sw $ra, 0($sp)
+		# save $a0
+		add $sp, $sp, -4
+		sw $a0, 0($sp)
+		# save $a1
+		add $sp, $sp, -4
+		sw $a1, 0($sp)
+		# save $t0
+		add $sp, $sp, -4
+		sw $t0, 0($sp)
+		# save $t1
+		add $sp, $sp, -4
+		sw $t1, 0($sp)
 		
-		move $a0, $t4
+		move $a0, $t2
 		move $a1, $t0
 		
-		move $s1, $ra
-		
-		move $s2, $t0
-		move $s3, $t1
 		jal carre_n_valide_index_n
-		move $t1, $s3
-		move $t0, $s2
+		# $t3 : adress actuel (0-80)
+		move $t3, $v0
 		
-		move $ra, $s1
+		# load $t1
+		lw $t1, 0($sp)
+		add $sp, $sp, 4
+		# load $t0
+		lw $t0, 0($sp)
+		add $sp, $sp, 4
+		# load $a1
+		lw $a1, 0($sp)
+		add $sp, $sp, 4
+		# load $a0
+		lw $a0, 0($sp)
+		add $sp, $sp, 4
+		# load $ra
+		lw $ra, 0($sp)
+		add $sp, $sp, 4
 		
-		move $t2, $v0
 		
-		move $a0, $t7
-		move $a1, $t8
+		add $t3, $t3, $a0
+		lb $t4, 0($t3)
 		
-		#li $v0, 1
-		#move $a0, $t2
-		#syscall
-		
-		add $t2, $t2, $a0
-		lb, $t5, 0($t2)
-		
-		
-		# for ( j=0 ; j<9 ; j++ )
-		# 
+		# $t1 : j
+		# for j=i+1 ; j<9; j++
 		add $t1, $t0, 1
 		carre_n_valide_boucle_2:
+			# save $ra
+			add $sp, $sp, -4
+			sw $ra, 0($sp)
+			# save $a0
+			add $sp, $sp, -4
+			sw $a0, 0($sp)
+			# save $a1
+			add $sp, $sp, -4
+			sw $a1, 0($sp)
+			# save $t0
+			add $sp, $sp, -4
+			sw $t0, 0($sp)
+			# save $t1
+			add $sp, $sp, -4
+			sw $t1, 0($sp)
 			
-			move $t7, $a0
-			move $t8, $a1
-			
-			move $a0, $t4
+			move $a0, $t2
 			move $a1, $t1
 			
-			move $t9, $ra
-			
-			move $s2, $t0
-			move $s3, $t1
 			jal carre_n_valide_index_n
-			move $t1, $s3
-			move $t0, $s2
+			# $t3 : adress actuel (0-80)
+			move $t5, $v0
 			
-			move $ra, $t9
+			# load $t1
+			lw $t1, 0($sp)
+			add $sp, $sp, 4
+			# load $t0
+			lw $t0, 0($sp)
+			add $sp, $sp, 4
+			# load $a1
+			lw $a1, 0($sp)
+			add $sp, $sp, 4
+					# load $a0
+			lw $a0, 0($sp)
+			add $sp, $sp, 4
+			# load $ra
+			lw $ra, 0($sp)
+			add $sp, $sp, 4
 			
-			move $t3, $v0
 			
-			move $a0, $t7
-			move $a1, $t8
-			add $t3, $t3, $a0
-			lb $t6, 0($t3)
+			add $t5, $t5, $a0
+			lb $t6, 0($t5)
 			
 			beq $t6, 0, carre_n_valide_0
-			beq $t5, $t6, carre_n_valide_false
+			beq $t4, $t6, carre_n_valide_false
 			carre_n_valide_0:
 			
-			
 			add $t1, $t1, 1
-			blt $t1, 9, carre_n_valide_boucle_2
+			blt, $t1, 9, carre_n_valide_boucle_2
 		add $t0, $t0, 1
 		blt $t0, 8, carre_n_valide_boucle_1
-		
-		
-		carre_n_valide_true:
-			li $v0, 0
-			j carre_n_valide_end
-		carre_n_valide_false:
-			li $v0, 1
-		carre_n_valide_end:
-	jr $ra
 	
-# ------------------------------------------------- #
-# func :	carre_n_valide
-# args :	$a0 : adress table
-# 		$a1 : n° bloc (0-8)
-# retu :	$v0 : 1 = invalide, 0 = valide
-# prec :	table : 81 bytes
-# vars :	$t0 : compteur boucle 1 _ x
-# 		$t1 : compteur boucle 1 _ y
-#		$t2 : compteur boucle 2 _ x
-# 		$t3 : compteur boucle 2 _ y
-#		$t4 : index base block
-#		$t5 : index actuel ($t0 * 9 + j)
-#		$t6 : MEM[$t5 + $a0]
-#		$t7 : 
-#		$t8 : 
-#		$t9 : 
-# ------------------------------------------------- #
-carre_n_valide_2:
-	# save $a0
-	add $sp, $sp, -4
-	sw $a0, 0($sp)
-	# save $ra
-	add $sp, $sp, -4
-	sw $ra, 0($sp)
-	
-	move $a0, $a1
-	jal carre_n_valide_index_base
-	move $t4, $v0
-	
-	# load $ra
-	lw $ra, 0($sp)
-	add $sp, $sp, 4
-	# load $a0
-	lw $a0, 0($sp)
-	add $sp, $sp, 4
-	
-	# Calcul position elements
-	# for( $t0=0 ; $t0<3 ; $t0++ )
-	#	for( $t1=0 ; $t1<3 ; $t0++ )
-	#		x = $t0 * 9 + $t0
-	move $s0, $a0
-	li $t0, 0
-	carre_n_valide_boucle_1_:
-		li $t1, 0
-		carre_n_valide_boucle_2_:
-			mul $t5, $t0, 9
-			add $t5, $t5, $t1
-			add $t5, $t5, $t4
-			
-			add $t6, $t5, $a0
-			lb $t6, 0($t6)
-			
-			# Verifications Elements
-			# for( $t2=$t0 ; $t2<3 ; $t2++ )
-			#	for( $t3=$t1 ; $t3<3 ; $t3++ )
-			#		x = $t0 * 9 + $t0
-			move $t2, $t0
-			carre_n_valide_boucle_3:
-				move $t3, $t1
-				carre_n_valide_boucle_4:
-					
-					# ----- #
-					
-					# ----- #
-					
-					add $t3, $t3, 1
-					blt $t3, 3, carre_n_valide_boucle_4
-				add $t2, $t2, 1
-				blt $t2, 3, carre_n_valide_boucle_3
-			
-			move $a0, $t6
-			li $v0, 1
-			syscall
-			
-			move $a0, $s0
-			add $t1, $t1, 1
-			blt $t1, 3, carre_n_valide_boucle_2
-			
-		add $t0, $t0, 1
-		blt $t0, 3, carre_n_valide_boucle_1
-	
-	carre_n_valide_true_:
+	carre_n_valide_true:
 		li $v0, 0
-		j colonne_n_valide_end
-	carre_n_valide_false_:
+		j carre_n_valide_end
+	carre_n_valide_false:
 		li $v0, 1
-	carre_n_valide_end_:
+	carre_n_valide_end:
+	
 	jr $ra
-
+	
 # Fin de la zone d'appel de fonctions.
 
 exit:
