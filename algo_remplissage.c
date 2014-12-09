@@ -29,5 +29,6 @@ void algo_remp (grille sudoku, int pos)
     print_sudoku;
 }
     
-    bref il reste un problème, il faut trouver une super condition qui nous permetterait de trouver toutes les solutions
+  /*  bref il reste un problème, il faut trouver une super condition qui nous permetterait de trouver toutes les solutions
     et pas qu'une seule.
+*/
