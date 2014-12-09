@@ -13,7 +13,7 @@ void algo_remp (grille sudoku, int pos)
     {
         if(sudoku[pos] > 0 )
         algo_remp (sudoku,pos+1);
-        else for (i=0;i<9;i++) //quand la case est modifiable
+        else for (i=1;i<9;i++) //quand la case est modifiable on commence à 1 
             {
                 sudoku[pos]=i;
                 if (colonne_n_valide==0 && ligne_n_valide==0 && carre_n_valide==0 )
