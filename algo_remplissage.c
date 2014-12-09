@@ -30,5 +30,5 @@ void algo_remp (grille sudoku, int pos)
 }
     
   /*  bref il reste un problème, il faut trouver une super condition qui nous permetterait de trouver toutes les solutions
-    et pas qu'une seule.
+    et pas qu'une seule. 
 */
